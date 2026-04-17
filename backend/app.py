@@ -129,6 +129,18 @@ def get_alerts():
 def get_zones():
     return jsonify(zones)
 
+@app.route('/zones', methods=['POST'])
+def create_zone():
+    data = request.json
+
+    zones.append({
+        "id": data["id"],
+        "type": data["type"],
+        "polygon": data["polygon"]
+    })
+
+    return {"message": "Zone created"}
+
 # -----------------------------
 # Run Server
 # -----------------------------

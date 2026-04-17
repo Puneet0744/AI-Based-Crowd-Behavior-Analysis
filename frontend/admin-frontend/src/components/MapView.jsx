@@ -6,14 +6,8 @@ import L from "leaflet";
 export default function MapView() {
   const center = [12.8219, 80.0441];
 
-  const zone = [
-    [12.821939, 80.044166],
-    [12.821475, 80.043224],
-    [12.822849, 80.043272],
-    [12.822858, 80.044232],
-  ];
-
   const [users, setUsers] = useState([]);
+  const [zones, setZones] = useState([]); // 🔥 NEW
 
   // ✅ Marker Icons
   const redIcon = new L.Icon({
@@ -26,9 +20,10 @@ export default function MapView() {
     iconSize: [32, 32],
   });
 
-  // ✅ Fetch users from backend
+  // 🔥 Fetch users + zones
   useEffect(() => {
-    const fetchUsers = () => {
+    const fetchData = () => {
+      // USERS
       fetch("http://localhost:5000/users")
         .then((res) => res.json())
         .then((data) => {
@@ -39,11 +34,19 @@ export default function MapView() {
           setUsers(usersArray);
         })
         .catch((err) => console.error(err));
+
+      // ZONES
+      fetch("http://localhost:5000/zones")
+        .then((res) => res.json())
+        .then((data) => {
+          setZones(data);
+        })
+        .catch((err) => console.error(err));
     };
 
-    fetchUsers(); // initial fetch
+    fetchData();
 
-    const interval = setInterval(fetchUsers, 2000); // auto refresh
+    const interval = setInterval(fetchData, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -57,7 +60,7 @@ export default function MapView() {
           Current Zone
         </p>
         <h2 className="mt-2 text-base font-semibold text-slate-900">
-          High Risk Cliff Zone
+          Live Zone Monitoring
         </h2>
       </div>
 
@@ -78,7 +81,7 @@ export default function MapView() {
       <MapContainer center={center} zoom={17} className="h-full w-full">
         <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
-        {/* 🔥 Dynamic Users */}
+        {/* 🔥 USERS */}
         {users.map((user) => (
           <Marker
             key={user.id}
@@ -87,15 +90,23 @@ export default function MapView() {
           />
         ))}
 
-        {/* 🔴 Zone */}
-        <Polygon
-          positions={zone}
-          pathOptions={{
-            color: "#ef4444",
-            fillOpacity: 0.18,
-            weight: 3,
-          }}
-        />
+        {/* 🔥 ZONES (FROM BACKEND) */}
+        {zones.map((zone, index) => (
+          <Polygon
+            key={index}
+            positions={zone.polygon}
+            pathOptions={{
+              color:
+                zone.type === "danger"
+                  ? "#ef4444"
+                  : zone.type === "restricted"
+                  ? "#f59e0b"
+                  : "#10b981",
+              fillOpacity: 0.2,
+              weight: 3,
+            }}
+          />
+        ))}
       </MapContainer>
     </div>
   );
