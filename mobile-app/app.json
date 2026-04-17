@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Tourist Safety",
+    "slug": "smart-tourist-management",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "tourist-safety",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.touristsafety.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs your location to show your position on the map, detect unsafe zones, and send SOS alerts.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to show your position on the map, detect unsafe zones, and send SOS alerts."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a"
+      },
+      "package": "com.touristsafety.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "VIBRATE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Tourist Safety to use your location for maps, geo-fencing, and emergency alerts."
+        }
+      ],
+      "expo-asset"
+    ]
+  }
+}
